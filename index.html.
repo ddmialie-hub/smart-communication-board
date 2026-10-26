@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang=“ms”>
+<head>
+<meta charset=“UTF-8”>
+<meta name=“viewport”
+ content=“width=device-width, initial-scale=1”>
+<title>AAC Smart Communication Board</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 14px;
+  font-family: Arial, sans-serif;
+  background: #F8F6FC;
+  color: #45415C;
+}
+
+header {
+  background: linear-gradient(120deg, #DCD6F7, #CDEFE4);
+  color: #45415C;
+  text-align: center;
+  padding: 16px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+header h1 {
+  font-size: 25px;
+  margin: 4px;
+}
+
+header p {
+  margin: 6px 0;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 12px 0 8px;
+}
+
+#sentence {
+  background: #FFFFFF;
+  border: 2px solid #DCD6F7;
+  border-radius: 16px;
+  min-height: 75px;
+  padding: 12px;
+  font-size: 21px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.action {
+  min-height: 48px;
+  border: 0;
+  border-radius: 14px;
+  padding: 9px 5px;
+  background: #E3E9FA;
+  color: #45415C;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#speak {
+  background: #BFE8D9;
+}
+
+#categories {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 3px 0 8px;
+  scroll-snap-type: x proximity;
+}
+
+.cat {
+  flex: 0 0 112px;
+  min-height: 58px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #E8E2FA;
+  color: #45415C;
+  font-size: 14px;
+  font-weight: bold;
+  scroll-snap-align: start;
+}
+
+.cat:nth-child(4n + 2) {
+  background: #D4F0E6;
+}
+
+.cat:nth-child(4n + 3) {
+  background: #FFE0E8;
+}
+
+.cat:nth-child(4n + 4) {
+  background: #FFE9D2;
+}
+
+.cat.active {
+  border-color: #8275B9;
+  box-shadow: 0 2px 7px #B9B0D555;
+}
+
+#words {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.tile {
+  min-width: 0;
+  min-height: 100px;
+  border: 2px solid #E8E2F3;
+  border-radius: 16px;
+  background: #FFFFFF;
+  color: #45415C;
+  padding: 8px 4px;
+  touch-action: manipulation;
+  box-shadow: 0 2px 5px #6A638510;
+}
+
+.tile:nth-child(4n + 2) {
+  background: #F0EDFF;
+}
+
+.tile:nth-child(4n + 3) {
+  background: #E8F8F1;
+}
+
+.tile:nth-child(4n + 4) {
+  background: #FFF0F3;
+}
+
+.tile:active {
+  background: #DCD6F7;
+  border-color: #A99DDA;
+}
+
+.symbol {
+  display: block;
+  font-size: 31px;
+  margin-bottom: 6px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+#status {
+  min-height: 18px;
+  font-size: 13px;
+}
+
+footer {
+  margin: 14px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #77718D;
+}
+
+/* Paparan melintang pada tablet */
+@media (orientation: landscape) and (min-width: 600px) {
+  body {
+    padding: 10px 14px;
+  }
+
+  header {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  header h1 {
+    font-size: 22px;
+  }
+
+  header p {
+    margin: 3px;
+    font-size: 13px;
+  }
+
+  h2 {
+    margin: 8px 0 5px;
+    font-size: 16px;
+  }
+
+  #sentence {
+    min-height: 58px;
+    padding: 8px 12px;
+    font-size: 19px;
+  }
+
+  .actions {
+    margin: 7px 0;
+  }
+
+  .action {
+    min-height: 40px;
+  }
+
+  #categories {
+    gap: 7px;
+  }
+
+  .cat {
+    flex-basis: 120px;
+    min-height: 48px;
+  }
+
+  #words {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .tile {
+    min-height: 86px;
+    padding: 5px 3px;
+  }
+
+  .symbol {
+    font-size: 29px;
+    margin-bottom: 4px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  footer {
+    margin: 8px 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🗣️ SMART COMMUNICATION BOARD</h1>
+  <p>Papan Komunikasi Digital MBPK</p>
+  <p>Pilih simbol. Bina ayat. Sampaikan mesej.</p>
+</header>
+
+<h2>💬 Ayat Saya</h2>
+
+<div id=“sentence” aria-live=“polite”>
+  Pilih simbol untuk membina ayat.
+</div>
+
+<div class=“actions”>
+  <button class=“action” id=“speak”
+   onclick=“speakSentence()”>
+   🔊 CAKAP AYAT
+  </button>
+
+  <button class=“action”
+   onclick=“undoWord()”>
+   ↩️ UNDO
+  </button>
+
+  <button class=“action”
+   onclick=“clearSentence()”>
+   🗑️ PADAM AYAT
+  </button>
+<button class=“action”
+   onclick=“repeatLast()”>
+   🔁 ULANG MESEJ
+  </button>
+</div>
+
+<p id=“status” role=“status”>
+  Pilih kategori dan tekan simbol.
+</p>
+
+<h2>📚 Kategori Komunikasi</h2>
+<div id=“categories”></div>
+
+<h2 id=“categoryTitle”>💬 Perkataan Asas</h2>
+<div id=“words”></div>
+
+<footer>
+Smart Communication Board<br>
+Direka untuk menyokong komunikasi MBPK
+</footer>
+
+<script>
+const categories = [
+  {
+    name: “Asas”,
+    icon: “💬”,
+    words: [
+      [“🙋”, “Saya”],
+      [“👉”, “Awak”],
+      [“👥”, “Kita”],
+      [“❤️”, “Mahu”],
+      [“🚫”, “Tidak”],
+      [“✅”, “Ya”],
+      [“❌”, “Bukan”],
+      [“👍”, “Boleh”],
+      [“🛑”, “Tidak boleh”],
+      [“➕”, “Lagi”],
+      [“✔️”, “Sudah”],
+      [“⏳”, “Belum”],
+      [“✋”, “Berhenti”],
+      [“🙏”, “Tolong”],
+      [“🔄”, “Ulang”],
+      [“💡”, “Faham”],
+      [“❔”, “Tidak faham”]
+    ]
+  },
+
+  {
+    name: “Keperluan”,
+    icon: “🍽️”,
+    words: [
+      [“🍚”, “Makan”],
+      [“🥤”, “Minum”],
+      [“🚻”, “Tandas”],
+      [“🛏️”, “Rehat”],
+      [“😴”, “Tidur”],
+      [“🍽️”, “Lapar”],
+      [“💧”, “Dahaga”],
+      [“🆘”, “Bantuan”],
+      [“🏠”, “Mahu pulang”],
+      [“🌡️”, “Panas”],
+      [“❄️”, “Sejuk”],
+      [“🪑”, “Mahu duduk”],
+      [“🚶”, “Mahu berjalan”],
+      [“🤲”, “Mahu sesuatu”],
+      [“🎒”, “Mahu barang saya”],
+      [“⏱️”, “Tunggu”],
+      [“💤”, “Saya penat”],
+    ]
+  },
+
+  {
+    name: “Emosi”,
+    icon: “❤️”,
+    words: [
+      [“😊”, “Gembira”],
+      [“😢”, “Sedih”],
+      [“😠”, “Marah”],
+      [“😞”, “Kecewa”],
+      [“😨”, “Takut”],
+      [“😟”, “Risau”],
+      [“😕”, “Keliru”],
+      [“🥱”, “Bosan”],
+      [“😳”, “Malu”],
+      [“😌”, “Tenang”],
+      [“😣”, “Tidak selesa”],
+      [“🥰”, “Sayang”],
+      [“😲”, “Terkejut”],
+      [“😫”, “Tertekan”],
+      [“🤩”, “Teruja”],
+      [“😔”, “Kesunyian”],
+      [“😤”, “Geram”],
+      [“💚”, “Saya okay”]
+    ]
+  },
+
+  {
+    name: “Sosial”,
+    icon: “👋”,
+    words: [
+      [“👋”, “Hai”],
+      [“🌞”, “Selamat pagi”],
+      [“🌙”, “Selamat malam”],
+      [“👋”, “Selamat tinggal”],
+      [“🙏”, “Terima kasih”],
+      [“🫂”, “Maaf”],
+      [“🤝”, “Sama-sama”],
+      [“🆘”, “Tolong saya”],
+      [“⚽”, “Bermain”],
+      [“🎉”, “Jom”],
+      [“🧑‍🤝‍🧑”, “Mahu berkawan”],
+      [“👏”, “Bagus”],
+      [“🤗”, “Boleh saya sertai?”],
+      [“✋”, “Jangan”],
+      [“🖐️”, “Jangan sentuh saya”],
+      [“👋”, “Jumpa lagi”]
+    ]
+  },
+
+  {
+    name: “Aktiviti”,
+    icon: “🎨”,
+    words: [
+      [“📖”, “Baca”],
+      [“✏️”, “Tulis”],
+      [“🔢”, “Kira”],
+      [“🎨”, “Melukis”],
+      [“⚽”, “Main bola”],
+      [“🎵”, “Dengar muzik”],
+      [“🧸”, “Main permainan”],
+      [“🏃”, “Berlari”],
+      [“🚶”, “Berjalan”],
+      [“🪑”, “Duduk”],
+      [“🧍”, “Berdiri”],
+      [“🙌”, “Regangan”],
+      [“🌳”, “Keluar kelas”],
+      [“🛝”, “Taman permainan”],
+      [“📚”, “Belajar”],
+      [“✅”, “Siap”],
+      [“⏳”, “Belum siap”],
+      [“🔁”, “Buat lagi”],
+    ]
+  },
+
+  {
+    name: “Diri”,
+    icon: “🧼”,
+    words: [
+      [“🛁”, “Mandi”],
+      [“🧼”, “Basuh tangan”],
+      [“🪥”, “Gosok gigi”],
+      [“👕”, “Pakai baju”],
+[“👟”, “Pakai kasut”],
+      [“🧦”, “Pakai stoking”],
+      [“🪮”, “Sikat rambut”],
+      [“🧻”, “Tisu”],
+      [“🧴”, “Sabun”],
+      [“🧺”, “Baju kotor”],
+      [“🪞”, “Kemas diri”],
+      [“🚽”, “Buang air kecil”],
+      [“🚽”, “Buang air besar”]
+    ]
+  },
+
+  {
+    name: “Kesihatan”,
+    icon: “🩺”,
+    words: [
+      [“🤕”, “Sakit”],
+      [“🤯”, “Kepala sakit”],
+      [“🤒”, “Demam”],
+      [“😵”, “Pening”],
+      [“🫃”, “Perut sakit”],
+      [“🦷”, “Sakit gigi”],
+      [“👂”, “Telinga sakit”],
+      [“🩹”, “Luka”],
+      [“💊”, “Ubat”],
+      [“🏥”, “Hospital”],
+      [“🔊”, “Bunyi terlalu kuat”],
+      [“💡”, “Terlalu terang”],
+      [“🥵”, “Terlalu panas”],
+      [“🥶”, “Terlalu sejuk”],
+      [“🆘”, “Saya perlukan bantuan”]
+    ]
+  },
+
+  {
+    name: “Pembelajaran”,
+    icon: “🏫”,
+    words: [
+      [“📕”, “Buku”],
+      [“✏️”, “Pensel”],
+      [“🧽”, “Pemadam”],
+      [“📏”, “Pembaris”],
+      [“📒”, “Buku latihan”],
+      [“🖍️”, “Krayon”],
+      [“🎒”, “Beg sekolah”],
+      [“🙋”, “Saya mahu menjawab”],
+      [“❓”, “Saya mahu bertanya”],
+      [“🤔”, “Saya tidak faham”],
+      [“🔄”, “Ulang semula”],
+      [“🆘”, “Saya perlukan bantuan”],
+      [“✅”, “Saya sudah siap”],
+      [“⏳”, “Saya belum siap”],
+      [“👂”, “Dengar arahan”],
+      [“✍️”, “Bantu saya menulis”],
+      [“📖”, “Bacakan kepada saya”],
+      [“🪑”, “Saya mahu berehat”],
+      [“🖐️”, “Saya mahu menjawab”],
+      [“🏆”, “Saya berjaya”]
+    ]
+  },
+
+  {
+    name: “Tempat”,
+    icon: “🏠”,
+    words: [
+      [“🏠”, “Rumah”],
+      [“🏫”, “Sekolah”],
+      [“🚪”, “Kelas”],
+      [“🍽️”, “Kantin”],
+      [“🚻”, “Tandas”],
+      [“🏥”, “Klinik”],
+      [“🛝”, “Taman permainan”],
+      [“🛒”, “Kedai”],
+      [“🚗”, “Kereta”],
+      [“🚌”, “Bas”],
+      [“🛏️”, “Bilik tidur”],
+      [“🛁”, “Bilik mandi”],
+      [“🍳”, “Dapur”],
+      [“🌳”, “Taman”],
+      [“📚”, “Perpustakaan”],
+      [“🏟️”, “Dewan”]
+    ]
+  },
+
+  {
+    name: “Orang”,
+    icon: “👨‍👩‍👧”,
+    words: [
+      [“👩”, “Ibu”],
+      [“👨”, “Ayah”],
+      [“👵”, “Nenek”],
+      [“👴”, “Datuk”],
+      [“👧”, “Kakak”],
+      [“👦”, “Abang”],
+      [“👶”, “Adik”],
+      [“🧑‍🏫”, “Guru”],
+      [“🧑‍⚕️”, “Doktor”],
+      [“🧑‍🤝‍🧑”, “Kawan”],
+      [“🧑‍💼”, “Pembantu”],
+      [“👨‍👩‍👧”, “Keluarga”],
+    ]
+  },
+
+  {
+    name: “Makanan”,
+    icon: “🍎”,
+    words: [
+      [“🍚”, “Nasi”],
+      [“🍞”, “Roti”],
+      [“🍜”, “Mi”],
+      [“🍗”, “Ayam”],
+      [“🥚”, “Telur”],
+      [“🍎”, “Epal”],
+      [“🍌”, “Pisang”],
+      [“🍉”, “Tembikai”],
+      [“🥛”, “Susu”],
+      [“💧”, “Air kosong”],
+      [“🍪”, “Biskut”],
+      [“🍦”, “Aiskrim”],
+      [“🥣”, “Bubur”],
+      [“🥦”, “Sayur”],
+      [“🍲”, “Sup”],
+      [“🍽️”, “Tambah makanan”],
+      [“🚫”, “Tidak mahu makan”],
+      [“🤢”, “Saya tidak suka rasa ini”]
+    ]
+  }
+];
+
+let words = [];
+let lastMessage = “”;
+let activeCategory = 0;
+
+function renderCategories() {
+  const area = document.getElementById(“categories”);
+  area.innerHTML = “”;
+
+  categories.forEach((cat, index) => {
+    const button = document.createElement(“button”);
+    button.className = “cat” +
+      (index === activeCategory ? “ active” : “”);
+button.textContent = cat.icon + “ “ + cat.name;
+    button.setAttribute(“aria-pressed”,
+      index === activeCategory ? “true” : “false”);
+
+    button.onclick = () => {
+      activeCategory = index;
+      renderCategories();
+      renderWords();
+    };
+
+    area.appendChild(button);
+  });
+}
+
+function renderWords() {
+  const cat = categories[activeCategory];
+  document.getElementById(“categoryTitle”).textContent =
+    cat.icon + “ “ + cat.name;
+
+  const area = document.getElementById(“words”);
+  area.innerHTML = “”;
+
+  cat.words.forEach(item => {
+    const button = document.createElement(“button”);
+    button.className = “tile”;
+    button.setAttribute(“aria-label”, item[1]);
+
+    const symbol = document.createElement(“span”);
+    symbol.className = “symbol”;
+    symbol.textContent = item[0];
+
+    const label = document.createElement(“span”);
+    label.className = “label”;
+    label.textContent = item[1];
+
+    button.append(symbol, label);
+
+    button.onclick = () => {
+      words.push(item[1]);
+      lastMessage = item[1];
+      updateSentence();
+      document.getElementById(“status”).textContent =
+        “Dipilih: “ + item[1];
+    };
+
+    area.appendChild(button);
+  });
+}
+
+function updateSentence() {
+  document.getElementById(“sentence”).textContent =
+    words.length ? words.join(“ “) :
+    “Pilih simbol untuk membina ayat.”;
+}
+
+function speakText(text) {
+  const status = document.getElementById(“status”);
+
+  if (!text.trim()) {
+    status.textContent = “Sila pilih simbol dahulu.”;
+    return;
+  }
+
+  if (!(“speechSynthesis” in window)) {
+    status.textContent =
+      “Pelayar ini tidak menyokong fungsi suara.”;
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = “ms-MY”;
+  utterance.rate = 0.85;
+
+  utterance.onstart = () => {
+    status.textContent = “Sedang menyebut mesej...”;
+  };
+
+  utterance.onend = () => {
+    status.textContent = “Mesej selesai disebut.”;
+  };
+
+  utterance.onerror = () => {
+    status.textContent =
+      “Suara tidak dapat dimainkan. Semak tetapan suara iPad.”;
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakSentence() {
+  speakText(words.join(“ “));
+}
+
+function repeatLast() {
+  if (words.length) {
+    speakText(words.join(“ “));
+  } else {
+    speakText(lastMessage);
+  }
+}
+
+function undoWord() {
+  words.pop();
+  updateSentence();
+}
+
+function clearSentence() {
+  words = [];
+  updateSentence();
+  document.getElementById(“status”).textContent =
+    “Ruang ayat telah dikosongkan.”;
+}
+
+renderCategories();
+renderWords();
+</script>
+
+</body>
+</html>
